@@ -22,6 +22,8 @@
     "packages/*"
   ],
   "dependencies": {
+    "@types/dotenv": "^8.2.3",
+    "dotenv": "^17.4.2",
     "react-router-dom": "^7.17.0"
   }
 }

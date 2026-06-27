@@ -1,6 +1,6 @@
 import z from "zod";
 
 export const preInterviewBody = z.object({
-  LinkedIn: z.$brand.toString(),
+  LinkedIn: z.string(),
   github: z.string()
 })
