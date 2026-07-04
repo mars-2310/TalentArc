@@ -29,6 +29,7 @@ model Interview {
   status            InterviewStatus
   score             Int       @default(0)
   messages          Messages[]
+  feedBack          String?
 }
 
 model Messages {
@@ -37,4 +38,5 @@ model Messages {
   type          MessageType
   interviewId   String
   interview     Interview         @relation(fields: [interviewId], references: [id])
+  createdAt     DateTime  @default(now())
 }
