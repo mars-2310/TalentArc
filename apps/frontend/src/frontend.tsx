@@ -12,9 +12,9 @@ import { App } from "./App";
 
 const elem = document.getElementById("root")!;
 const app = (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 );
 
 if (import.meta.hot) {

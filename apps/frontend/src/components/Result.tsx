@@ -3,19 +3,19 @@ import { Button } from "./ui/button";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "@/lib/config";
-import { 
-  Award, 
-  MessageSquare, 
-  Clock, 
-  ChevronRight, 
-  RefreshCw, 
-  BookOpen, 
-  Sparkles, 
-  User, 
+import {
+  Award,
+  MessageSquare,
+  Clock,
+  ChevronRight,
+  RefreshCw,
+  BookOpen,
+  Sparkles,
+  User,
   Loader2,
   CheckCircle2,
   ThumbsUp,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -39,7 +39,7 @@ export function Result() {
     feedBack: "",
     status: "Pre",
   });
-  
+
   const [loadingTextIndex, setLoadingTextIndex] = useState(0);
 
   const { interviewId } = useParams();
@@ -51,7 +51,7 @@ export function Result() {
     "Analyzing technical correctness of your code explanations...",
     "Evaluating verbal communication and delivery metrics...",
     "Generating constructive feedback and overall score...",
-    "Finalizing report scorecard. Almost ready..."
+    "Finalizing report scorecard. Almost ready...",
   ];
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function Result() {
             status: data.status,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.error("Error fetching results:", err);
         });
     };
@@ -105,9 +105,23 @@ export function Result() {
 
   // Score description helper
   const getScoreDescription = (score: number) => {
-    if (score >= 8) return { label: "Excellent", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10", glow: "rgba(16,185,129,0.2)" };
-    if (score >= 6) return { label: "Good Progress", color: "text-indigo-400 border-indigo-500/30 bg-indigo-500/10", glow: "rgba(99,102,241,0.2)" };
-    return { label: "Needs Practice", color: "text-amber-400 border-amber-500/30 bg-amber-500/10", glow: "rgba(245,158,11,0.2)" };
+    if (score >= 8)
+      return {
+        label: "Excellent",
+        color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+        glow: "rgba(16,185,129,0.2)",
+      };
+    if (score >= 6)
+      return {
+        label: "Good Progress",
+        color: "text-indigo-400 border-indigo-500/30 bg-indigo-500/10",
+        glow: "rgba(99,102,241,0.2)",
+      };
+    return {
+      label: "Needs Practice",
+      color: "text-amber-400 border-amber-500/30 bg-amber-500/10",
+      glow: "rgba(245,158,11,0.2)",
+    };
   };
 
   const scoreInfo = getScoreDescription(result.score);
@@ -117,7 +131,8 @@ export function Result() {
   const strokeCircumference = 2 * Math.PI * strokeRadius;
   // Score is out of 10
   const scorePercentage = result.score * 10;
-  const strokeDashoffset = strokeCircumference - (scorePercentage / 100) * strokeCircumference;
+  const strokeDashoffset =
+    strokeCircumference - (scorePercentage / 100) * strokeCircumference;
 
   return (
     <div className="min-h-screen w-screen bg-slate-950 text-slate-100 font-sans p-4 sm:p-6 md:p-8 flex flex-col items-center relative overflow-x-hidden">
@@ -136,9 +151,9 @@ export function Result() {
             Performance Report
           </div>
         </div>
-        <Button 
+        <Button
           onClick={handleRestart}
-          variant="outline" 
+          variant="outline"
           className="border-white/[0.08] text-slate-300 bg-white/[0.02] hover:bg-white/[0.08] hover:text-white flex items-center gap-2 rounded-lg cursor-pointer"
         >
           <RefreshCw className="h-3.5 w-3.5" /> Start New
@@ -156,8 +171,13 @@ export function Result() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-bold text-slate-100">AI Evaluator is Grading</h3>
-              <p className="text-xs text-slate-400">Our evaluation pipeline calculates grading metrics out of 10 based on correctness and communication.</p>
+              <h3 className="text-lg font-bold text-slate-100">
+                AI Evaluator is Grading
+              </h3>
+              <p className="text-xs text-slate-400">
+                Our evaluation pipeline calculates grading metrics out of 10
+                based on correctness and communication.
+              </p>
             </div>
 
             <div className="w-full bg-slate-900/50 border border-white/[0.04] p-4 rounded-xl flex items-center justify-center text-sm text-indigo-300 font-medium font-mono min-h-[60px] animate-pulse">
@@ -170,7 +190,6 @@ export function Result() {
       {/* COMPLETED RESULTS DASHBOARD */}
       {result.status === "Done" && (
         <div className="relative z-10 w-full max-w-5xl flex flex-col gap-8 flex-1">
-          
           {/* Summary Score Banner */}
           <div className="glass-panel p-6 sm:p-8 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl border-white/[0.08]">
             <div className="flex items-center gap-5">
@@ -196,26 +215,36 @@ export function Result() {
                     strokeDashoffset={strokeDashoffset}
                     strokeLinecap="round"
                     style={{
-                      filter: `drop-shadow(0 0 6px ${scoreInfo.glow})`
+                      filter: `drop-shadow(0 0 6px ${scoreInfo.glow})`,
                     }}
                   />
                 </svg>
                 {/* Score numbers inside */}
                 <div className="absolute flex flex-col items-center justify-center">
-                  <span className="text-2xl font-bold font-mono tracking-tight text-white">{result.score}</span>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Scale / 10</span>
+                  <span className="text-2xl font-bold font-mono tracking-tight text-white">
+                    {result.score}
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                    Scale / 10
+                  </span>
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5 text-center sm:text-left">
                 <div className="flex items-center justify-center sm:justify-start gap-2.5">
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-100">Evaluation Scorecard</h2>
-                  <span className={`text-[10px] font-bold uppercase tracking-wider border px-2 py-0.5 rounded-full ${scoreInfo.color}`}>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-100">
+                    Evaluation Scorecard
+                  </h2>
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-wider border px-2 py-0.5 rounded-full ${scoreInfo.color}`}
+                  >
                     {scoreInfo.label}
                   </span>
                 </div>
                 <p className="text-xs text-slate-400 max-w-md">
-                  Your mock session report is ready. It analyzes technical accuracy, architectural design, clarity, confidence, and language fluency.
+                  Your mock session report is ready. It analyzes technical
+                  accuracy, architectural design, clarity, confidence, and
+                  language fluency.
                 </p>
               </div>
             </div>
@@ -231,7 +260,6 @@ export function Result() {
 
           {/* Detailed Content: Report & History Split */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
             {/* Left Column: AI Feedback Report */}
             <div className="glass-panel p-6 sm:p-8 rounded-2xl border-white/[0.08] lg:col-span-7 flex flex-col gap-6 shadow-xl">
               <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-4">
@@ -239,8 +267,12 @@ export function Result() {
                   <Award className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-100">Interviewer Insights</h3>
-                  <p className="text-[11px] text-slate-400">Structured critique compiled by technical evaluators.</p>
+                  <h3 className="text-base font-bold text-slate-100">
+                    Interviewer Insights
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Structured critique compiled by technical evaluators.
+                  </p>
                 </div>
               </div>
 
@@ -261,15 +293,23 @@ export function Result() {
                 <div className="bg-white/[0.01] border border-white/[0.04] p-3.5 rounded-lg flex items-start gap-2.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-semibold text-slate-300">Technical Depth</span>
-                    <span className="text-[10px] text-slate-500">Evaluates coding syntax and structural logic.</span>
+                    <span className="text-xs font-semibold text-slate-300">
+                      Technical Depth
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                      Evaluates coding syntax and structural logic.
+                    </span>
                   </div>
                 </div>
                 <div className="bg-white/[0.01] border border-white/[0.04] p-3.5 rounded-lg flex items-start gap-2.5">
                   <ThumbsUp className="h-4 w-4 text-indigo-400 mt-0.5 shrink-0" />
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-xs font-semibold text-slate-300">Fluency & Tone</span>
-                    <span className="text-[10px] text-slate-500">Measures explanations and interview confidence.</span>
+                    <span className="text-xs font-semibold text-slate-300">
+                      Fluency & Tone
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                      Measures explanations and interview confidence.
+                    </span>
                   </div>
                 </div>
               </div>
@@ -282,8 +322,12 @@ export function Result() {
                   <MessageSquare className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-100">Conversation Log</h3>
-                  <p className="text-[11px] text-slate-400">Verbatim transcripts captured during calling.</p>
+                  <h3 className="text-base font-bold text-slate-100">
+                    Conversation Log
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Verbatim transcripts captured during calling.
+                  </p>
                 </div>
               </div>
 
@@ -294,15 +338,17 @@ export function Result() {
                     .sort(
                       (a, b) =>
                         new Date(a.createdAt).getTime() -
-                        new Date(b.createdAt).getTime()
+                        new Date(b.createdAt).getTime(),
                     )
                     .map((msg, i) => {
                       const isUser = msg.type === "User";
                       return (
-                        <div 
-                          key={i} 
+                        <div
+                          key={i}
                           className={`flex flex-col gap-1 w-[85%] ${
-                            isUser ? 'self-end items-end' : 'self-start items-start'
+                            isUser
+                              ? "self-end items-end"
+                              : "self-start items-start"
                           }`}
                         >
                           <div className="flex items-center gap-1 text-[9px] text-slate-500 font-bold uppercase tracking-wider px-1">
@@ -318,12 +364,12 @@ export function Result() {
                               </>
                             )}
                           </div>
-                          
-                          <div 
+
+                          <div
                             className={`p-3.5 rounded-2xl text-xs sm:text-sm leading-normal ${
-                              isUser 
-                                ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-tr-none shadow-md shadow-indigo-600/10' 
-                                : 'bg-white/[0.03] border border-white/[0.06] text-slate-300 rounded-tl-none'
+                              isUser
+                                ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-tr-none shadow-md shadow-indigo-600/10"
+                                : "bg-white/[0.03] border border-white/[0.06] text-slate-300 rounded-tl-none"
                             }`}
                           >
                             {msg.content}
@@ -334,12 +380,13 @@ export function Result() {
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 text-slate-500 text-center gap-2">
                     <MessageSquare className="h-8 w-8 text-slate-700" />
-                    <span className="text-xs">No transcripts recorded. Did you speak during the session?</span>
+                    <span className="text-xs">
+                      No transcripts recorded. Did you speak during the session?
+                    </span>
                   </div>
                 )}
               </div>
             </div>
-
           </div>
         </div>
       )}

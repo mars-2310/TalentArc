@@ -1,159 +1,132 @@
-# Turborepo starter
+# TalentArc 🎯
 
-This Turborepo starter is maintained by the Turborepo core team.
+TalentArc is an AI-powered technical interviewing platform that customizes and conducts technical interviews. By analyzing a candidate's GitHub repositories, TalentArc dynamically tailors technical questions to their real-world experience, conducts an interactive voice interview using the OpenAI Realtime API, and evaluates the candidate's performance.
 
-## Using this example
+---
 
-Run the following command:
+## 🚀 Key Features
 
-```sh
-npx create-turbo@latest
+- **GitHub Scraper Integration**: Automatically fetches a candidate's public repositories, repository descriptions, and star counts to tailor the interview dynamically to their technical background.
+- **Real-Time Voice Interviews**: Connects candidates via WebRTC to OpenAI's Realtime API (`gpt-realtime-2`) for seamless, low-latency audio interviews.
+- **LLM-Based Evaluation**: Once the interview is complete, the transcript is analyzed by a structured JSON model (`gpt-5-nano`) to generate feedback and a score from 0 to 10.
+- **Modern Monorepo Architecture**: Powered by [Turborepo](https://turbo.build/repo) and [Bun](https://bun.sh/) for ultra-fast builds, package management, and developer workflow.
+
+---
+
+## 📂 Project Structure
+
+This monorepo contains the following packages and applications:
+
+```text
+├── apps/
+│   ├── frontend/       # Bun + React (React Router, Tailwind CSS, Radix UI, lucide-react)
+│   └── backend/        # Express.js + Prisma (PostgreSQL) + OpenAI API
+├── packages/
+│   ├── ui/             # Shared UI React component library (button, card, code, etc.)
+│   ├── eslint-config/  # Shared ESLint configuration
+│   └── typescript-config/ # Shared TypeScript configuration
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 🛠️ Tech Stack
 
-### Apps and Packages
+- **Runtime & Package Manager**: [Bun](https://bun.sh/)
+- **Monorepo Tooling**: [Turborepo](https://turbo.build/)
+- **Frontend**: [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/), [React Router v7](https://reactrouter.com/), [Sonner](https://sonner.emilkowal.ski/)
+- **Backend**: [Express.js](https://expressjs.com/), [Prisma ORM](https://www.prisma.io/), [OpenAI SDK](https://github.com/openai/openai-node)
+- **Database**: [PostgreSQL](https://www.postgresql.org/)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+---
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## 🏁 Getting Started
 
-### Utilities
+### 📋 Prerequisites
 
-This Turborepo has some additional tools already setup for you:
+Before running the project, make sure you have the following installed:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- **Bun** (v1.3.9 or higher)
+- **PostgreSQL** database
 
-### Build
+### 1. Install Dependencies
 
-To build all apps and packages, run the following command:
+Install all dependencies for the apps and packages from the root of the workspace:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+bun install
 ```
 
-Without global `turbo`, use your package manager:
+### 2. Configure Environment Variables
 
-```sh
-cd my-turborepo
-npx turbo build
-bun dlx turbo build
-bun exec turbo build
+Create `.env` files in both frontend and backend directories.
+
+#### Backend Configuration (`apps/backend/.env`)
+
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/talentarc"
+OPENAI_API_KEY="your-openai-api-key"
+DEEPGRAM_API_KEY="your-deepgram-api-key"
+GEMINI_API_KEY="your-gemini-api-key"
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+#### Frontend Configuration (`apps/frontend/.env`)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```env
+DEEPGRAM_API_KEY="your-deepgram-api-key"
 ```
 
-Without global `turbo`:
+### 3. Run Database Migrations
 
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
+Apply the database migrations to your PostgreSQL database:
+
+```bash
+cd apps/backend
+bunx prisma db push
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+## 💻 Development Workflow
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+To manage tasks across the monorepo, use the following workspace-wide commands:
 
-```sh
-cd my-turborepo
-turbo dev
+### Start Development Servers
+
+To run both the frontend and backend in development mode with hot reloading:
+
+```bash
+bun dev
 ```
 
-Without global `turbo`, use your package manager:
+### Build for Production
 
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
+To build all apps and packages for production:
+
+```bash
+bun build
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Lint the Codebase
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+To check the code quality across all packages:
 
-```sh
-turbo dev --filter=web
+```bash
+bun lint
 ```
 
-Without global `turbo`:
+### Check Types
 
-```sh
-npx turbo dev --filter=web
-bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
+To run TypeScript verification:
+
+```bash
+bun check-types
 ```
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## 🔗 Useful Links
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+- [Turborepo Documentation](https://turbo.build/repo/docs)
+- [Prisma ORM Documentation](https://www.prisma.io/docs)
+- [OpenAI Realtime API Docs](https://platform.openai.com/docs/guides/realtime)
+- [Bun Documentation](https://bun.sh/docs)

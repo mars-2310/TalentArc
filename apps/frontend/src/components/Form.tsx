@@ -46,13 +46,19 @@ export function Form() {
         github: cleanGithub,
         LinkedIn: cleanLinkedIn,
       });
-      toast.success("Workspace prepared! Redirecting...", { position: "top-center" });
+      toast.success("Workspace prepared! Redirecting...", {
+        position: "top-center",
+      });
       navigate(`/interview/${response.data.id}`);
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Failed to start interview. Please try again.", {
-        position: "top-center",
-      });
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to start interview. Please try again.",
+        {
+          position: "top-center",
+        },
+      );
     } finally {
       setLoading(false);
     }
@@ -63,7 +69,7 @@ export function Form() {
       {/* Decorative background glow nodes */}
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] animate-float-slow-1 pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] animate-float-slow-2 pointer-events-none" />
-      
+
       {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
@@ -80,21 +86,30 @@ export function Form() {
           TalentArc
         </h1>
         <p className="text-sm sm:text-base text-slate-400 font-light max-w-sm text-center mb-8">
-          Launch your mock technical interview. We scrape your public GitHub and LinkedIn profile to tailor specific questions just for you.
+          Launch your mock technical interview. We scrape your public GitHub and
+          LinkedIn profile to tailor specific questions just for you.
         </p>
 
         {/* Form Card */}
         <div className="glass-panel p-8 rounded-2xl w-full max-w-md shadow-2xl flex flex-col gap-6">
           <div className="flex flex-col gap-1.5">
-            <h2 className="text-lg font-semibold text-slate-100">Get Started</h2>
-            <p className="text-xs text-slate-400">Fill in your professional profiles to kick off the session.</p>
+            <h2 className="text-lg font-semibold text-slate-100">
+              Get Started
+            </h2>
+            <p className="text-xs text-slate-400">
+              Fill in your professional profiles to kick off the session.
+            </p>
           </div>
 
           <div className="flex flex-col gap-4">
             {/* LinkedIn Input Group */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="linkedin-input" className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
-                <Linkedin className="h-3.5 w-3.5 text-blue-400" /> LinkedIn Profile
+              <label
+                htmlFor="linkedin-input"
+                className="text-xs font-medium text-slate-300 flex items-center gap-1.5"
+              >
+                <Linkedin className="h-3.5 w-3.5 text-blue-400" /> LinkedIn
+                Profile
               </label>
               <div className="relative">
                 <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 h-4 w-4 pointer-events-none" />
@@ -112,7 +127,10 @@ export function Form() {
 
             {/* GitHub Input Group */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="github-input" className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+              <label
+                htmlFor="github-input"
+                className="text-xs font-medium text-slate-300 flex items-center gap-1.5"
+              >
                 <Github className="h-3.5 w-3.5 text-slate-300" /> GitHub Profile
               </label>
               <div className="relative">
