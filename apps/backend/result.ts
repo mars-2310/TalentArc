@@ -6,8 +6,15 @@ const client = new OpenAI({
 });
 
 const outputSchema = z.object({
-  feedback: z.string().describe("Overall feedback about the candidate's interview performance."),
-  score: z.number().int().min(0).max(10).describe("Overall interview score out of 10."),
+  feedback: z
+    .string()
+    .describe("Overall feedback about the candidate's interview performance."),
+  score: z
+    .number()
+    .int()
+    .min(0)
+    .max(10)
+    .describe("Overall interview score out of 10."),
 });
 
 const RESULT_PROMPT = `
@@ -46,7 +53,7 @@ export async function calculateResult(
     type: "Assistant" | "User";
     message: string;
     createdAt: Date;
-  }[]
+  }[],
 ) {
   const transcript = messages
     .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
@@ -55,10 +62,7 @@ export async function calculateResult(
 
   const completion = await client.responses.parse({
     model: "gpt-5-nano",
-    input: RESULT_PROMPT.replace(
-      "{{USER_TRANSCRIPT}}",
-      transcript
-    ),
+    input: RESULT_PROMPT.replace("{{USER_TRANSCRIPT}}", transcript),
     text: {
       format: {
         type: "json_schema",

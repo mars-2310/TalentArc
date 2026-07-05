@@ -12,39 +12,41 @@ app.use(cors());
 app.use(express.text({ type: ["application/sdp", "text/plain"] }));
 
 app.post("/api/v1/pre-interview", async (req, res) => {
-    const {success, data} = preInterviewBody.safeParse(req.body);
-    if(!success) {
-      res.status(411).json({
-        message: "Incorrect body"
-      });
-      return; 
-    };
-    const githubUrl = data.github;
-    const linkedInUrl = data.LinkedIn;
-
-    const githubUsername = githubUrl.replace(/\/+$/, "").split("/").pop();
-    const linkedInUsername = linkedInUrl.replace(/\/+$/, "").split("/").pop();
-
-    //SCRAPING GITHUB
-    const userRepos = await axios.get(`https://api.github.com/users/${githubUsername}/repos`);
-    const filteredUserRepos = userRepos.data.map((x: any) => ({
-      description: x.description,
-      name: x.name,
-      fullname: x.fullname,
-      starCount: x.stargazers_count
-    }));
-
-    //SCRAPING LinkedIn
-
-    const interview = await prisma.interview.create({
-      data: {
-        githubMetaData: filteredUserRepos,
-        status: "Pre",
-      },
+  const { success, data } = preInterviewBody.safeParse(req.body);
+  if (!success) {
+    res.status(411).json({
+      message: "Incorrect body",
     });
-    console.log("Created interview:", interview.id);
+    return;
+  }
+  const githubUrl = data.github;
+  const linkedInUrl = data.LinkedIn;
 
-    res.json({id: interview.id});
+  const githubUsername = githubUrl.replace(/\/+$/, "").split("/").pop();
+  const linkedInUsername = linkedInUrl.replace(/\/+$/, "").split("/").pop();
+
+  //SCRAPING GITHUB
+  const userRepos = await axios.get(
+    `https://api.github.com/users/${githubUsername}/repos`,
+  );
+  const filteredUserRepos = userRepos.data.map((x: any) => ({
+    description: x.description,
+    name: x.name,
+    fullname: x.fullname,
+    starCount: x.stargazers_count,
+  }));
+
+  //SCRAPING LinkedIn
+
+  const interview = await prisma.interview.create({
+    data: {
+      githubMetaData: filteredUserRepos,
+      status: "Pre",
+    },
+  });
+  console.log("Created interview:", interview.id);
+
+  res.json({ id: interview.id });
 });
 
 app.post(`/api/v1/session/:interviewId`, async (req, res) => {
@@ -60,14 +62,17 @@ app.post(`/api/v1/session/:interviewId`, async (req, res) => {
   fd.set("session", sessionConfig);
 
   try {
-    const sdpResponse = await fetch("https://api.openai.com/v1/realtime/calls", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "OpenAI-Safety-Identifier": "hashed-user-id",
+    const sdpResponse = await fetch(
+      "https://api.openai.com/v1/realtime/calls",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "OpenAI-Safety-Identifier": "hashed-user-id",
+        },
+        body: fd,
       },
-      body: fd,
-    });
+    );
 
     // Location: /v1/realtime/calls/rtc_123456
     const location = sdpResponse.headers.get("Location");
@@ -78,68 +83,67 @@ app.post(`/api/v1/session/:interviewId`, async (req, res) => {
     const sdp = await sdpResponse.text();
     res.send(sdp);
     initSideband(callId!, req.params.interviewId);
-
   } catch (error) {
     console.error("Token generation error:", error);
     res.status(500).json({ error: "Failed to generate token" });
-  };
+  }
 });
 
 app.post(`/api/v1/session/user/response/:interviewId`, async (req, res) => {
-  const {message} = req.body;
+  const { message } = req.body;
   await prisma.messages.create({
-    data:{
+    data: {
       interviewId: req.params.interviewId,
       type: "User",
-      message: message
-    }
+      message: message,
+    },
   });
   res.json("Message saved!");
 });
 
 app.get("/api/v1/results/:interviewId", async (req, res) => {
-   const interview = await prisma.interview.findFirst({
+  const interview = await prisma.interview.findFirst({
     where: {
-      id: req.params.interviewId
+      id: req.params.interviewId,
     },
     include: {
-      messages: true 
-    }
-   });
+      messages: true,
+    },
+  });
 
-   if(!interview){
+  if (!interview) {
     res.json({
-      message: "Interview not found"
-    })
+      message: "Interview not found",
+    });
     return;
-   }
+  }
 
-   res.json({
-      score: interview?.score,
-      feedBack: interview?.feedBack,
-      status: interview.status,
-      transcript: interview?.messages.map((x) => {
-        return {
-          type: x.type,
-          content: x.message,
-          createdAt: x.createdAt
-        };
-      })
-   });
+  res.json({
+    score: interview?.score,
+    feedBack: interview?.feedBack,
+    status: interview.status,
+    transcript: interview?.messages.map((x) => {
+      return {
+        type: x.type,
+        content: x.message,
+        createdAt: x.createdAt,
+      };
+    }),
+  });
 
-   if(interview.status != "Done"){
-     const result = await calculateResult(interview.messages);
-     await prisma.interview.update({
+  if (interview.status != "Done") {
+    const result = await calculateResult(interview.messages);
+    await prisma.interview.update({
       where: {
-        id: req.params.interviewId
+        id: req.params.interviewId,
       },
       data: {
         status: "Done",
         feedBack: result.feedback,
-        score: result.score
-      }
-     })
-   }
-})
+        score: result.score,
+      },
+    });
+  }
+});
 
 app.listen(3001);

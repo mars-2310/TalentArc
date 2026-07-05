@@ -9,13 +9,13 @@ import { Toaster } from "sonner";
 export function App() {
   return (
     <>
-      <Toaster/>
+      <Toaster />
       <Routes>
-      <Route path="/" element={<Form />} />
-      <Route path="/interview/:interviewId" element={<Interview />} />
-      <Route path="/result/:interviewId" element={<Result />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="/" element={<Form />} />
+        <Route path="/interview/:interviewId" element={<Interview />} />
+        <Route path="/result/:interviewId" element={<Result />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }

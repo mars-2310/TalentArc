@@ -11,10 +11,10 @@ export async function initSideband(callId: string, interviewId: string) {
 
   const interview = await prisma.interview.findUnique({
     where: {
-      id: interviewId
-    }
+      id: interviewId,
+    },
   });
-  
+
   console.log("interviewId:", interviewId);
   console.log("interview:", interview);
 
@@ -27,25 +27,30 @@ export async function initSideband(callId: string, interviewId: string) {
         type: "session.update",
         session: {
           type: "realtime",
-          instructions: `You are supposed to interview the user based on his/her Computer Science knowledge. Ask 2-3 questions based on theie experience. Use only English as language. Here is everything about user's github which will provide a rough idea of what projects the user have made ${interview?.githubMetaData}` ,
+          instructions: `You are supposed to interview the user based on his/her Computer Science knowledge. Ask 2-3 questions based on theie experience. Use only English as language. Here is everything about user's github which will provide a rough idea of what projects the user have made ${interview?.githubMetaData}`,
         },
-      })
+      }),
     );
   });
 
-  ws.on("message", async function incoming(message) { 
+  ws.on("message", async function incoming(message) {
     const parsedMessage = JSON.parse(message.toString());
-    if(parsedMessage.type == 'response.done'){
-      let content: {type: string, transcript: string}[] = [];
-      parsedMessage.response.output.map(x => content = [...content, ...x.content]);
-      const assistantMessage = content.filter(x => x.type === "output_audio").map(x => x.transcript).join("");
+    if (parsedMessage.type == "response.done") {
+      let content: { type: string; transcript: string }[] = [];
+      parsedMessage.response.output.map(
+        (x) => (content = [...content, ...x.content]),
+      );
+      const assistantMessage = content
+        .filter((x) => x.type === "output_audio")
+        .map((x) => x.transcript)
+        .join("");
       await prisma.messages.create({
         data: {
           interviewId,
           type: "Assistant",
-          message: assistantMessage
-        }
+          message: assistantMessage,
+        },
       });
-    };
+    }
   });
-};
+}
