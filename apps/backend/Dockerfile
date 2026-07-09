@@ -1,25 +1,19 @@
-# Use the official Bun image as base
-FROM oven/bun:latest
+FROM oven/bun:1
 
 WORKDIR /app
 
-# Copy package configuration
-COPY package.json ./
-
-# Install backend dependencies
-RUN bun install --production
-
-# Copy database schema definition
-COPY prisma ./prisma/
-
-# Generate database client code
-RUN bun x prisma generate --schema=./prisma/schema.prisma
-
-# Copy application source files
+# Copy the entire workspace
 COPY . .
 
-# Expose application listening port
+# Install workspace dependencies
+RUN bun install
+
+# Move to backend
+WORKDIR /app/apps/backend
+
+# Generate Prisma Client
+RUN bunx prisma generate
+
 EXPOSE 3001
 
-# Run the backend application
-CMD ["bun", "run", "index.ts"]
+CMD ["bun", "index.ts"]
