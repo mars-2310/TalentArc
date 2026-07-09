@@ -1,33 +1,21 @@
-# Stage 1: Build the React application
-FROM oven/bun:1.1-slim AS builder
+FROM oven/bun:1 AS builder
 
 WORKDIR /app
 
-# Copy package configurations
-COPY package.json ./
+COPY . .
 
-# Install development & production dependencies
 RUN bun install
 
-# Copy source and style assets
-COPY src/ ./src/
-COPY styles/ ./styles/
-COPY tsconfig.json components.json build.ts ./
+WORKDIR /app/apps/frontend
 
-# Compile production bundle using build script
 RUN bun run build
 
-# Stage 2: Serve the compiled static assets using Nginx
+# Runtime stage
 FROM nginx:alpine
 
-# Copy compiled assets from builder
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/apps/frontend/dist /usr/share/nginx/html
+COPY apps/frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy custom Nginx configuration to support SPA routing
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose HTTP port
 EXPOSE 80
 
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
